@@ -5,31 +5,50 @@ function showDiff(){
     // Test date format '11/23/2018,20:11'
     var now = new Date();
   
-    var gameStart1 = new Date();
-    var gameStart2 = new Date();
-    var gameStart3 = new Date();
-    var gameStart4 = new Date();
-  
+    // Source for most of the code below before reworking
+    // https://stackoverflow.com/questions/15523142/javascript-adding-minutes-in-a-loop
 
+    var gameNumber = 4; // How many rounds
+    var gameLength = 50; // Game length in minutes
+
+    // Make times more human readable
+    function pad(val,max) {
+      // Convert the value to a string 
+      var str = val.toString(); 
+      // Ternary operator: If the string's length is less than the max add a leading zero, otherwise return the string
+      return str.length < max ? pad("0" + str, max) : str;
+    }
+
+    function listGameTimes() {
+      // Get the time and date
+      var gameStart = new Date(); 
+      // Setup gameTimes to be an empty array
+      var gameTimes = [];
+      for (var i=1;i<(gameNumber + 1);i++) {
+          // Make hour an empty object literal
+          var hour = {};
+          // Add the gameLength each loop but not the first time
+          gameStart.setHours(18);
+          gameStart.setMinutes(30 + ((i - 1) * gameLength));
+          gameStart.setSeconds(0);
+
+          // Make the times pretty
+          hour.text = pad(gameStart.getHours(),2) +':'+pad(gameStart.getMinutes(),2);
+          // Get the full time/date 
+          hour.time = new Date(gameStart.toString());
+          // Push the new hour to the array
+          gameTimes.push(hour);
+        }
+      return gameTimes;
+    }
+
+    console.log(listGameTimes());
+    console.log(gameStart1);
   
-    // Set the game start times
-    gameStart1.setHours(18);
-    gameStart1.setMinutes(30);
-    gameStart1.setSeconds(0);
-  
-    gameStart2.setHours(19);
-    gameStart2.setMinutes(20);
-    gameStart2.setSeconds(0);
-  
-    gameStart3.setHours(20);
-    gameStart3.setMinutes(10);
-    gameStart3.setSeconds(0);
-  
-    gameStart4.setHours(21);
-    gameStart4.setMinutes(0);
-    gameStart4.setSeconds(0);
-  
-  
+    var gameStart1 = listGameTimes()[0].time;
+    var gameStart2 = listGameTimes()[1].time;
+    var gameStart3 = listGameTimes()[2].time;
+    var gameStart4 = listGameTimes()[3].time;
   
   
     // Default next game start time, first game of the night
@@ -121,9 +140,15 @@ function showDiff(){
     document.getElementById("nextGameTime").innerHTML = nextGameHours + ":" + nextGameMinutes;
     // Display a countdown until the next game
     document.getElementById("countdown").innerHTML = countdownMessage;
+
+    // console.log("Please Hold");
  
   
   
   
 setTimeout(showDiff,1000);
 }
+
+
+
+
